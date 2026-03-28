@@ -1,0 +1,31 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div><h1 class="kh-page-title">Gestion des Users</h1><p class="page-sub">{{ filteredUsers.length }} utilisateur(s)</p></div>
+    <button class="kh-btn kh-btn--primary">+ Inviter utilisateur</button>
+  </div>
+  <div class="filters animate-2">
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search…" [(ngModel)]="search" />
+    </div>
+    <button class="tab" [class.active]="filtre==='tous'" (click)="filtre='tous'">Tous</button>
+    <button class="tab" [class.active]="filtre==='admin'" (click)="filtre='admin'">Admin</button>
+    <button class="tab" [class.active]="filtre==='entrepreneur'" (click)="filtre='entrepreneur'">Entrepreneurs</button>
+    <button class="tab" [class.active]="filtre==='coach'" (click)="filtre='coach'">Coachs</button>
+  </div>
+  <div class="table-wrap animate-3">
+    <table>
+      <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Registered</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let u of filteredUsers">
+          <td><strong>{{ u.prenom }} {{ u.nom }}</strong></td>
+          <td style="color:var(--text-secondary)">{{ u.email }}</td>
+          <td><span class="kh-badge" [class]="u.role==='admin'?'kh-badge--orange':u.role==='entrepreneur'?'kh-badge--teal':'kh-badge--violet'">{{ u.role }}</span></td>
+          <td><span class="kh-badge" [class]="u.statut==='actif'?'kh-badge--green':'kh-badge--gray'">{{ u.statut }}</span></td>
+          <td style="color:var(--text-muted)">{{ u.createdAt }}</td>
+          <td><div class="actions"><button class="kh-btn kh-btn--ghost kh-btn--sm">Edit</button><button class="kh-btn kh-btn--danger kh-btn--sm">Delete</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

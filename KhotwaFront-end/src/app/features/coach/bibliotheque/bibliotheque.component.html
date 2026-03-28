@@ -1,0 +1,142 @@
+<div class="page animate-1">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="kh-page-title">Resource Library</h1>
+      <p class="page-sub">{{ ressources.length }} resource(s) available</p>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="lib-stats animate-2">
+    <div class="lib-stat"><span class="lib-stat__val">{{ stats.total }}</span><span class="lib-stat__label">Total</span></div>
+    <div class="lib-stat"><span class="lib-stat__val" style="color:var(--green)">{{ stats.public }}</span><span class="lib-stat__label">Public</span></div>
+    <div class="lib-stat"><span class="lib-stat__val" style="color:var(--teal)">{{ stats.incubes }}</span><span class="lib-stat__label">Incubated</span></div>
+    <div class="lib-stat"><span class="lib-stat__val" style="color:var(--amber)">{{ stats.payant }}</span><span class="lib-stat__label">Premium</span></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters animate-2">
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search resources…" [(ngModel)]="search" (input)="onSearch()" />
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Type</span>
+      <button class="tab" [class.active]="filterType==='ALL'" (click)="filterType='ALL';load()">All</button>
+      <button class="tab" [class.active]="filterType==='PDF'" (click)="filterType='PDF';load()">📄 PDF</button>
+      <button class="tab" [class.active]="filterType==='VIDEO'" (click)="filterType='VIDEO';load()">🎥 Video</button>
+      <button class="tab" [class.active]="filterType==='EXCEL'" (click)="filterType='EXCEL';load()">📊 Excel</button>
+      <button class="tab" [class.active]="filterType==='WORD'" (click)="filterType='WORD';load()">📝 Word</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Access</span>
+      <button class="tab" [class.active]="filterAccess==='ALL'" (click)="filterAccess='ALL';load()">All</button>
+      <button class="tab" [class.active]="filterAccess==='PUBLIC'" (click)="filterAccess='PUBLIC';load()">🌐 Public</button>
+      <button class="tab" [class.active]="filterAccess==='INCUBES'" (click)="filterAccess='INCUBES';load()">🔒 Incubated</button>
+      <button class="tab" [class.active]="filterAccess==='PAYANT'" (click)="filterAccess='PAYANT';load()">💎 Premium</button>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div class="res-grid animate-3">
+    <div *ngFor="let r of ressources" class="res-card kh-card" (click)="openDetail(r)">
+      <div class="res-card__top">
+        <div class="res-icon">{{ typeIcons[r.type] || '📁' }}</div>
+        <div class="res-badges">
+          <span class="kh-badge" [class]="getAccessBadge(r.niveauAcces)">{{ r.niveauAcces }}</span>
+          <span *ngIf="r.categorie" class="kh-badge kh-badge--gray">{{ r.categorie.nom }}</span>
+        </div>
+      </div>
+      <h3 class="res-titre">{{ r.titre }}</h3>
+      <p class="res-desc">{{ r.description }}</p>
+      <div class="res-meta">
+        <span>{{ r.tailleFormatee || (r.dureeSec ? (r.dureeSec/60|number:'1.0-0') + ' min' : '') }}</span>
+        <span style="color:var(--text-muted)">{{ r.vues }} views</span>
+      </div>
+      <!-- Progress bar -->
+      <ng-container *ngIf="r.maProgression">
+        <div class="prog-row">
+          <span class="prog-label" [style.color]="getProgressColor(r.maProgression.statut)">
+            {{ r.maProgression.statut === 'COMPLETED' ? '✓ Completed' : r.maProgression.statut === 'IN_PROGRESS' ? 'In progress' : 'Not started' }}
+          </span>
+          <span class="prog-pct">{{ r.maProgression.pourcentage }}%</span>
+        </div>
+        <div class="kh-progress">
+          <div class="kh-progress__fill"
+               [style.width.%]="r.maProgression.pourcentage"
+               [style.background]="getProgressColor(r.maProgression.statut)"></div>
+        </div>
+      </ng-container>
+      <!-- Tags -->
+      <div *ngIf="r.tags?.length" class="res-tags">
+        <span *ngFor="let t of r.tags" class="res-tag">{{ t.nom }}</span>
+      </div>
+      <div class="res-actions" (click)="$event.stopPropagation()">
+        <a [href]="r.urlFichier" target="_blank" class="kh-btn kh-btn--primary kh-btn--sm" style="flex:1;justify-content:center">
+          {{ r.type === 'VIDEO' ? '▶ Watch' : '📥 Download' }}
+        </a>
+        <button *ngIf="r.maProgression?.statut !== 'COMPLETED'" class="kh-btn kh-btn--ghost kh-btn--sm" (click)="markComplete(r)">
+          Mark done
+        </button>
+      </div>
+    </div>
+    <div *ngIf="ressources.length===0" class="empty-state">
+      <p>No resources found</p>
+    </div>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" *ngIf="showDetail" (click)="closeDetail()">
+    <div class="modal-box kh-card" (click)="$event.stopPropagation()" *ngIf="selectedRessource">
+      <div class="modal-header">
+        <div>
+          <span class="modal-icon">{{ typeIcons[selectedRessource.type] }}</span>
+          <h2>{{ selectedRessource.titre }}</h2>
+        </div>
+        <button class="modal-close" (click)="closeDetail()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">{{ selectedRessource.description }}</p>
+        <div class="modal-meta">
+          <div class="meta-item"><span class="meta-key">Type</span><span class="meta-val">{{ selectedRessource.type }}</span></div>
+          <div class="meta-item"><span class="meta-key">Access</span><span class="kh-badge" [class]="getAccessBadge(selectedRessource.niveauAcces)">{{ selectedRessource.niveauAcces }}</span></div>
+          <div class="meta-item" *ngIf="selectedRessource.tailleFormatee"><span class="meta-key">Size</span><span class="meta-val">{{ selectedRessource.tailleFormatee }}</span></div>
+          <div class="meta-item" *ngIf="selectedRessource.dureeSec"><span class="meta-key">Duration</span><span class="meta-val">{{ selectedRessource.dureeSec/60 | number:'1.0-0' }} min</span></div>
+          <div class="meta-item" *ngIf="selectedRessource.nombrePages"><span class="meta-key">Pages</span><span class="meta-val">{{ selectedRessource.nombrePages }}</span></div>
+          <div class="meta-item"><span class="meta-key">Views</span><span class="meta-val">{{ selectedRessource.vues }}</span></div>
+          <div class="meta-item"><span class="meta-key">Downloads</span><span class="meta-val">{{ selectedRessource.telechargements }}</span></div>
+          <div class="meta-item" *ngIf="selectedRessource.categorie"><span class="meta-key">Category</span><span class="meta-val">{{ selectedRessource.categorie.icone }} {{ selectedRessource.categorie.nom }}</span></div>
+        </div>
+        <div *ngIf="selectedRessource.tags?.length" style="margin-top:12px">
+          <span class="meta-key">Tags</span>
+          <div class="res-tags" style="margin-top:6px">
+            <span *ngFor="let t of selectedRessource.tags" class="res-tag">{{ t.nom }}</span>
+          </div>
+        </div>
+        <ng-container *ngIf="selectedRessource.maProgression">
+          <div class="modal-progress">
+            <div class="prog-row">
+              <span style="font-size:13px;font-weight:600">My Progress</span>
+              <span class="prog-pct">{{ selectedRessource.maProgression.pourcentage }}%</span>
+            </div>
+            <div class="kh-progress" style="height:8px">
+              <div class="kh-progress__fill" [style.width.%]="selectedRessource.maProgression.pourcentage"
+                   [style.background]="getProgressColor(selectedRessource.maProgression.statut)"></div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="modal-footer">
+        <a [href]="selectedRessource.urlFichier" target="_blank" class="kh-btn kh-btn--primary">
+          {{ selectedRessource.type === 'VIDEO' ? '▶ Watch' : '📥 Download' }}
+        </a>
+        <button *ngIf="selectedRessource.maProgression?.statut !== 'COMPLETED'" class="kh-btn kh-btn--ghost" (click)="markComplete(selectedRessource)">
+          Mark as completed
+        </button>
+        <button class="kh-btn kh-btn--ghost" (click)="closeDetail()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+:host { display: block; }
+.login { min-height: 100vh; background: #080C10; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; position: relative; overflow: hidden; }
+.bg { position: fixed; inset: 0; background-image: linear-gradient(rgba(232,228,220,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(232,228,220,0.025) 1px,transparent 1px); background-size: 60px 60px; }
+.glow { position: fixed; width: 500px; height: 500px; background: radial-gradient(circle,rgba(232,98,42,0.12),transparent 70%); top: -100px; left: -100px; border-radius: 50%; animation: drift 12s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: translate(0,0); } to { transform: translate(100px,80px); } }
+.content { position: relative; z-index: 2; text-align: center; max-width: 480px; width: 100%; }
+.brand { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 32px; animation: fadeInDown 0.5s both; }
+.brand-icon { width: 44px; height: 44px; border-radius: 13px; background: linear-gradient(135deg,#E8622A,#FF7A40); display: flex; align-items: center; justify-content: center; }
+.brand-name { font-family: 'Syne',sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 0.08em; color: #E8E4DC; }
+
+/* Tabs */
+.auth-tabs { display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 4px; margin-bottom: 28px; animation: fadeInDown 0.5s 0.05s both; }
+.tab-btn { flex: 1; padding: 9px; border-radius: 9px; border: none; background: transparent; color: rgba(232,228,220,0.45); font-family: 'Syne',sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.tab-btn.active { background: #E8622A; color: white; box-shadow: 0 4px 14px rgba(232,98,42,0.4); }
+
+/* Form */
+.auth-form { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 32px; text-align: left; animation: fadeInDown 0.4s 0.1s both; }
+h1 { font-family: 'Syne',sans-serif; font-size: 24px; font-weight: 800; color: #E8E4DC; margin-bottom: 6px; }
+.subtitle { font-size: 13px; color: rgba(232,228,220,0.45); margin-bottom: 24px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.form-group label { font-size: 12px; font-weight: 600; color: rgba(232,228,220,0.55); letter-spacing: 0.04em; text-transform: uppercase; }
+.form-input { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 11px 14px; color: #E8E4DC; font-size: 14px; font-family: 'Nunito Sans',sans-serif; outline: none; transition: border-color 0.2s; }
+.form-input:focus { border-color: #E8622A; }
+.form-input::placeholder { color: rgba(232,228,220,0.2); }
+
+/* Role pick */
+.role-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.role-pick-card { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: all 0.2s; }
+.role-pick-card.selected { border-color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); }
+.rp-icon { font-size: 20px; }
+.rp-label { font-size: 13px; font-weight: 600; color: #E8E4DC; }
+
+/* Error */
+.form-error { font-size: 12px; color: #FF6B6B; margin-bottom: 12px; padding: 8px 12px; background: rgba(255,107,107,0.1); border-radius: 8px; border: 1px solid rgba(255,107,107,0.2); }
+
+/* Submit */
+.btn-submit { width: 100%; padding: 13px; border-radius: 11px; background: linear-gradient(135deg,#E8622A,#FF7A40); border: none; color: white; font-family: 'Syne',sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 18px rgba(232,98,42,0.4); margin-top: 4px; }
+.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,98,42,0.55); }
+
+.form-switch { font-size: 13px; color: rgba(232,228,220,0.4); text-align: center; margin-top: 18px; }
+.form-switch a { color: #E8622A; cursor: pointer; font-weight: 600; }
+.form-switch a:hover { text-decoration: underline; }
+
+@keyframes fadeInDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }

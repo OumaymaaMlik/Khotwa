@@ -1,0 +1,72 @@
+<div class="login">
+  <div class="bg"></div>
+  <div class="glow"></div>
+  <div class="content">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <span class="brand-name">KHOTWA</span>
+    </div>
+
+    <!-- Tab switcher -->
+    <div class="auth-tabs">
+      <button class="tab-btn" [class.active]="mode==='signin'" (click)="mode='signin'">Sign In</button>
+      <button class="tab-btn" [class.active]="mode==='signup'" (click)="mode='signup'">Sign Up</button>
+    </div>
+
+    <!-- SIGN IN -->
+    <div class="auth-form" *ngIf="mode==='signin'">
+      <h1>Welcome back</h1>
+      <p class="subtitle">Sign in to your KHOTWA account</p>
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" [(ngModel)]="email" placeholder="you@example.com" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" [(ngModel)]="password" placeholder="••••••••" class="form-input" />
+      </div>
+      <p class="form-error" *ngIf="error">{{ error }}</p>
+      <button class="btn-submit" (click)="signIn()">Sign In →</button>
+      <p class="form-switch">Don't have an account? <a (click)="mode='signup'">Sign up</a></p>
+    </div>
+
+    <!-- SIGN UP — choose role first -->
+    <div class="auth-form" *ngIf="mode==='signup'">
+      <h1>Create your account</h1>
+      <p class="subtitle">Join KHOTWA and start your journey</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First name</label>
+          <input type="text" [(ngModel)]="firstName" placeholder="Sara" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label>Last name</label>
+          <input type="text" [(ngModel)]="lastName" placeholder="Trabelsi" class="form-input" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" [(ngModel)]="email" placeholder="you@example.com" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" [(ngModel)]="password" placeholder="••••••••" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label>I am a…</label>
+        <div class="role-pick">
+          <div *ngFor="let r of roles" class="role-pick-card" [class.selected]="selectedRole===r.role"
+               [style.--c]="r.color" (click)="selectedRole=r.role">
+            <span class="rp-icon">{{ r.icon }}</span>
+            <span class="rp-label">{{ r.label }}</span>
+          </div>
+        </div>
+      </div>
+      <p class="form-error" *ngIf="error">{{ error }}</p>
+      <button class="btn-submit" (click)="signUp()">Create account →</button>
+      <p class="form-switch">Already have an account? <a (click)="mode='signin'">Sign in</a></p>
+    </div>
+  </div>
+</div>

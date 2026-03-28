@@ -1,0 +1,29 @@
+.page { display:flex;flex-direction:column;gap:24px; }
+.page-header { display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px; }
+.page-sub { color:var(--text-secondary);margin-top:4px; }
+.kpi-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px; }
+.kpi-card { background:white;border-radius:var(--radius-md);padding:18px 20px;border:1px solid var(--border);transition:all 0.2s; }
+.kpi-card--primary { background:linear-gradient(135deg,#2ABFBF,#1a9999);color:white;border:none; }
+.kpi-card--primary .kpi-label { color:rgba(255,255,255,0.7); }
+.kpi-card--alert { border-color:rgba(232,74,74,0.3);background:rgba(232,74,74,0.04); }
+.kpi-card:hover { box-shadow:var(--shadow-hover);transform:translateY(-2px); }
+.kpi-value { font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--text-primary); }
+.kpi-card--primary .kpi-value { color:white; }
+.kpi-label { font-size:12px;color:var(--text-secondary);margin-top:3px; }
+.kpi-progress { margin-top:12px; }
+.bottom-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px; }
+.panel { padding:22px; }
+.panel-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:16px; }
+.project-row { padding:10px 0;border-bottom:1px solid var(--border); }
+.project-row:last-child { border-bottom:none; }
+.project-row__info { display:flex;align-items:center;justify-content:space-between; }
+.task-list { display:flex;flex-direction:column;gap:10px; }
+.task-item { padding:10px 12px;background:var(--bg-app);border-radius:var(--radius-sm);display:flex;flex-direction:column;gap:4px; }
+.task-name { font-size:13px;font-weight:600; }
+.task-meta { font-size:11px;color:var(--text-muted); }
+.rdv-list { display:flex;flex-direction:column;gap:10px; }
+.rdv-item { display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--border); }
+.rdv-item:last-child { border-bottom:none; }
+.rdv-date { text-align:center;background:var(--orange-light);border-radius:var(--radius-sm);padding:8px 12px;min-width:48px; }
+.rdv-day { display:block;font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--orange); }
+.rdv-mo { font-size:10px;text-transform:uppercase;font-weight:700;color:var(--orange);opacity:0.7; }

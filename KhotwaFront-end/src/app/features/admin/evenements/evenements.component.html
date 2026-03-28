@@ -1,0 +1,34 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div><h1 class="kh-page-title">Events & Workshops</h1><p class="page-sub">{{ filteredEvents.length }} event(s)</p></div>
+    <button class="kh-btn kh-btn--primary">+ Create event</button>
+  </div>
+  <div class="filters animate-2">
+    <button class="tab" [class.active]="filtre==='tous'" (click)="filtre='tous'">Tous</button>
+    <button class="tab" [class.active]="filtre==='pitch'" (click)="filtre='pitch'">Pitch</button>
+    <button class="tab" [class.active]="filtre==='webinar'" (click)="filtre='webinar'">Webinar</button>
+    <button class="tab" [class.active]="filtre==='formation'" (click)="filtre='formation'">Formation</button>
+    <button class="tab" [class.active]="filtre==='coaching'" (click)="filtre='coaching'">Coaching</button>
+  </div>
+  <div class="grid animate-3">
+    <div *ngFor="let ev of filteredEvents" class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+        <span class="kh-badge" [class]="ev.type==='pitch'?'kh-badge--orange':ev.type==='webinar'?'kh-badge--teal':ev.type==='formation'?'kh-badge--violet':'kh-badge--green'">{{ ev.type }}</span>
+        <span class="kh-badge" [class]="ev.restantes===0?'kh-badge--red':ev.restantes<5?'kh-badge--amber':'kh-badge--gray'">{{ ev.restantes===0 ? 'Complet' : ev.restantes+' places' }}</span>
+      </div>
+      <p class="card-name">{{ ev.titre }}</p>
+      <p class="card-meta" style="margin-top:6px">📅 {{ ev.date }} · {{ ev.heure }}</p>
+      <p class="card-meta">🎤 {{ ev.intervenant }}</p>
+      <ng-container *ngIf="ev.restantes > 0">
+        <div class="kh-progress" style="margin:14px 0 4px"><div class="kh-progress__fill" [style.width.%]="((ev.places - ev.restantes)/ev.places)*100"></div></div>
+        <p style="font-size:11px;color:var(--text-muted)">{{ ev.places - ev.restantes }}/{{ ev.places }} inscrits</p>
+      </ng-container>
+      <div class="card-footer">
+        <div class="actions">
+          <button class="kh-btn kh-btn--ghost kh-btn--sm">Edit</button>
+          <button class="kh-btn kh-btn--danger kh-btn--sm">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

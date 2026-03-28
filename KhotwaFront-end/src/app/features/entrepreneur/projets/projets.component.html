@@ -1,0 +1,44 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div><h1 class="kh-page-title">My Projects</h1><p class="page-sub">{{ filteredProjets.length }} project(s) — parcours de labellisation</p></div>
+    <button class="kh-btn kh-btn--primary">+ Create a project</button>
+  </div>
+  <div class="filters animate-2">
+    <button class="tab" [class.active]="filtre==='tous'" (click)="filtre='tous'">Tous</button>
+    <button class="tab" [class.active]="filtre==='en_cours'" (click)="filtre='en_cours'">En cours</button>
+    <button class="tab" [class.active]="filtre==='suspendu'" (click)="filtre='suspendu'">Suspendu</button>
+    <button class="tab" [class.active]="filtre==='termine'" (click)="filtre='termine'">Completed</button>
+  </div>
+  <div class="proj-list animate-3">
+    <div *ngFor="let p of filteredProjets" class="proj-card kh-card">
+      <div class="proj-accent" [style.background]="p.statut==='en_cours'?'linear-gradient(180deg,#2ABFBF,#1a9999)':p.statut==='termine'?'linear-gradient(180deg,#27AE7A,#1a8a5e)':'linear-gradient(180deg,#F5A623,#d4881e)'"></div>
+      <div class="proj-content">
+        <div class="proj-header">
+          <div><h3 class="proj-name">{{ p.titre }}</h3><p class="proj-desc">{{ p.description }}</p></div>
+          <span class="kh-badge" [class]="p.statut==='en_cours'?'kh-badge--teal':p.statut==='termine'?'kh-badge--green':'kh-badge--amber'">{{ p.statut }}</span>
+        </div>
+        <ng-container *ngIf="p.etapes.length > 0">
+          <div class="etapes-timeline">
+            <ng-container *ngFor="let e of p.etapes; let last=last">
+              <div class="etape" [class.done]="e.ordre < 2" [class.active]="e.ordre === 2">
+                <div class="etape-dot"></div>
+                <span class="etape-label">{{ e.titre }}</span>
+              </div>
+              <div *ngIf="!last" class="etape-connector"></div>
+            </ng-container>
+          </div>
+        </ng-container>
+        <div class="proj-footer">
+          <div class="prog-section">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:11px;color:var(--text-muted)">Progression</span><strong style="font-size:12px;color:var(--orange)">{{ p.progression }}%</strong></div>
+            <div class="kh-progress"><div class="kh-progress__fill" [style.width.%]="p.progression"></div></div>
+          </div>
+          <div class="proj-actions">
+            <button class="kh-btn kh-btn--ghost kh-btn--sm">View details</button>
+            <button class="kh-btn kh-btn--primary kh-btn--sm">Manage</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

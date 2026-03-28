@@ -1,0 +1,46 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div><h1 class="kh-page-title">Planning & Calendar</h1><p class="page-sub">Monthly view of events and deadlines</p></div>
+    <button class="kh-btn kh-btn--primary">+ Add event</button>
+  </div>
+  <div class="cal-layout animate-2">
+    <div class="kh-card cal-card">
+      <div class="cal-nav">
+        <button class="nav-btn" (click)="prevMonth()">‹</button>
+        <h2 class="cal-month">{{ monthNames[currentMonth] }} {{ currentYear }}</h2>
+        <button class="nav-btn" (click)="nextMonth()">›</button>
+      </div>
+      <div class="cal-days-header">
+        <span *ngFor="let d of dayNames">{{ d }}</span>
+      </div>
+      <div class="cal-grid">
+        <div *ngFor="let cell of calCells" class="cal-cell" [class.today]="isToday(cell.day)" [class.empty]="!cell.day">
+          <span *ngIf="cell.day" class="cal-day-num">{{ cell.day }}</span>
+          <ng-container *ngIf="cell.day">
+            <div *ngFor="let ev of cell.events.slice(0,2)" class="cal-event-pill" [style.background]="ev.couleur + '22'" [style.color]="ev.couleur">{{ ev.titre }}</div>
+            <span *ngIf="cell.events.length > 2" class="more-events">+{{ cell.events.length-2 }}</span>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-events">
+      <div class="kh-card upcoming-card">
+        <h3 class="kh-section-title" style="margin-bottom:16px">Upcoming</h3>
+        <div *ngFor="let ev of calEvents" class="upcoming-item">
+          <div class="upcoming-bar" [style.background]="ev.couleur"></div>
+          <div>
+            <p class="upcoming-title">{{ ev.titre }}</p>
+            <p class="upcoming-date">{{ ev.date }} {{ monthNames[currentMonth] }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="kh-card legend-card">
+        <h3 style="font-size:13px;font-weight:700;margin-bottom:12px">Legend</h3>
+        <div class="legend-item"><div class="legend-dot" style="background:#E84A4A"></div>Deadline</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2ABFBF"></div>Rendez-vous</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E8622A"></div>Event</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#27AE7A"></div>Planification</div>
+      </div>
+    </div>
+  </div>
+</div>

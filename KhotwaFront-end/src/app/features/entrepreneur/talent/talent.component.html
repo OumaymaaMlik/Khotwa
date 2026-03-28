@@ -1,0 +1,93 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div>
+      <h1 class="kh-page-title">Talent Marketplace</h1>
+      <p class="page-sub">Find talent and post opportunities for your startup</p>
+    </div>
+    <button class="kh-btn kh-btn--primary" (click)="showForm=true">+ Post listing</button>
+  </div>
+
+  <!-- Post listing form -->
+  <div class="form-panel animate-2" *ngIf="showForm">
+    <div class="form-panel__header">
+      <h3>New listing</h3>
+      <button class="kh-btn kh-btn--ghost kh-btn--sm" (click)="showForm=false">✕ Cancel</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Position / Role</label>
+        <input class="kh-input" type="text" [(ngModel)]="newAnnonce.poste" placeholder="e.g. Co-founder CTO" />
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select class="kh-input" [(ngModel)]="newAnnonce.type">
+          <option value="cofondateur">Co-founder</option>
+          <option value="stagiaire">Intern</option>
+          <option value="emploi">Full-time</option>
+          <option value="freelance">Freelance</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Required skills <span class="form-hint">(comma-separated)</span></label>
+      <input class="kh-input" type="text" [(ngModel)]="newAnnonce.competences" placeholder="e.g. React, Node.js, AWS" />
+    </div>
+    <button class="kh-btn kh-btn--primary" (click)="submitAnnonce()">Post listing →</button>
+  </div>
+
+  <div class="tabs animate-2">
+    <button class="tab" [class.active]="view==='talents'" (click)="view='talents'">👤 Talents ({{ talents.length }})</button>
+    <button class="tab" [class.active]="view==='annonces'" (click)="view='annonces'">📋 Listings ({{ annonces.length }})</button>
+  </div>
+
+  <!-- Talents list -->
+  <div *ngIf="view==='talents'" class="grid animate-3">
+    <div *ngFor="let t of talents" class="card">
+      <div class="talent-header">
+        <div class="talent-avatar">{{ t.nom[0] }}</div>
+        <div>
+          <p class="card-name">{{ t.nom }}</p>
+          <p class="card-meta">{{ t.poste }}</p>
+        </div>
+        <span class="kh-badge" [class]="t.disponible ? 'kh-badge--green' : 'kh-badge--gray'" style="margin-left:auto">
+          {{ t.disponible ? 'Available' : 'Unavailable' }}
+        </span>
+      </div>
+      <div class="skills">
+        <span *ngFor="let c of t.competences" class="skill-tag">{{ c }}</span>
+      </div>
+      <div style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+          <span style="font-size:11px;color:var(--text-secondary)">Overall score</span>
+          <strong style="font-size:12px;color:var(--orange)">{{ t.score }}%</strong>
+        </div>
+        <div class="kh-progress"><div class="kh-progress__fill" [style.width.%]="t.score"></div></div>
+      </div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:8px">
+        <button class="kh-btn kh-btn--primary kh-btn--sm">Contact</button>
+        <button class="kh-btn kh-btn--ghost kh-btn--sm">Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listings -->
+  <div *ngIf="view==='annonces'" class="grid animate-3">
+    <div *ngFor="let a of annonces" class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <span class="kh-badge" [class]="a.type==='cofondateur' ? 'kh-badge--orange' : a.type==='stagiaire' ? 'kh-badge--teal' : 'kh-badge--green'">{{ a.type }}</span>
+        <span class="score-badge" *ngIf="a.match > 0">{{ a.match }}% match</span>
+      </div>
+      <p class="card-name">{{ a.poste }}</p>
+      <p class="card-meta">{{ a.startup }}</p>
+      <div class="skills" style="margin-top:10px">
+        <span *ngFor="let c of a.competences" class="skill-tag">{{ c }}</span>
+      </div>
+      <button class="kh-btn kh-btn--primary kh-btn--sm" style="margin-top:14px;width:100%;justify-content:center">View applications</button>
+    </div>
+
+    <div *ngIf="annonces.length === 0" class="empty-state">
+      <p>No listings yet. Post your first opportunity!</p>
+      <button class="kh-btn kh-btn--primary" (click)="showForm=true">+ Post listing</button>
+    </div>
+  </div>
+</div>

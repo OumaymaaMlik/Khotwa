@@ -1,0 +1,21 @@
+<div class="page animate-1">
+  <div class="page-header"><h1 class="kh-page-title">My Supported Startups</h1><p class="page-sub">{{ projets.length }} project(s)</p></div>
+  <div class="grid animate-2">
+    <div *ngFor="let p of projets" class="card kh-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+        <div class="startup-icon">{{ p.titre[0] }}</div>
+        <span class="kh-badge" [class]="p.statut==='en_cours'?'kh-badge--teal':p.statut==='termine'?'kh-badge--green':'kh-badge--amber'">{{ p.statut }}</span>
+      </div>
+      <p class="card-name">{{ p.titre }}</p>
+      <p class="card-meta">{{ p.description }}</p>
+      <div style="margin:14px 0 8px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:11px;color:var(--text-muted)">Progression</span><strong style="font-size:12px">{{ p.progression }}%</strong></div>
+        <div class="kh-progress"><div class="kh-progress__fill kh-progress__fill--teal" [style.width.%]="p.progression"></div></div>
+      </div>
+      <div style="display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--border)">
+        <button class="kh-btn kh-btn--ghost kh-btn--sm">View details</button>
+        <button class="kh-btn kh-btn--sm" style="background:var(--violet);color:white">Session RDV</button>
+      </div>
+    </div>
+  </div>
+</div>

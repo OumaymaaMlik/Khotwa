@@ -1,0 +1,33 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div><h1 class="kh-page-title">Gestion des Abonnements</h1><p class="page-sub">{{ filteredAbonnements.length }} abonnement(s)</p></div>
+    <button class="kh-btn kh-btn--primary">+ Attribuer plan</button>
+  </div>
+  <div class="kpi-row animate-2">
+    <div class="mini-kpi"><span class="mini-kpi__val">12</span><span class="mini-kpi__label">Premium actifs</span></div>
+    <div class="mini-kpi"><span class="mini-kpi__val">6</span><span class="mini-kpi__label">Gratuits</span></div>
+    <div class="mini-kpi"><span class="mini-kpi__val">4</span><span class="mini-kpi__label">Institutionnels</span></div>
+    <div class="mini-kpi mini-kpi--red"><span class="mini-kpi__val">3</span><span class="mini-kpi__label">Expired this month</span></div>
+  </div>
+  <div class="filters animate-3">
+    <button class="tab" [class.active]="filtre==='tous'" (click)="filtre='tous'">Tous</button>
+    <button class="tab" [class.active]="filtre==='gratuit'" (click)="filtre='gratuit'">Gratuit</button>
+    <button class="tab" [class.active]="filtre==='premium'" (click)="filtre='premium'">Premium</button>
+    <button class="tab" [class.active]="filtre==='institutionnel'" (click)="filtre='institutionnel'">Institutionnel</button>
+  </div>
+  <div class="table-wrap animate-4">
+    <table>
+      <thead><tr><th>User</th><th>Plan</th><th>Status</th><th>Start</th><th>End</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let a of filteredAbonnements">
+          <td><strong>{{ a.user }}</strong><br><span style="color:var(--text-muted);font-size:11px">{{ a.email }}</span></td>
+          <td><span class="kh-badge" [class]="a.plan==='premium'?'kh-badge--orange':a.plan==='institutionnel'?'kh-badge--violet':'kh-badge--gray'">{{ a.plan }}</span></td>
+          <td><span class="kh-badge" [class]="a.statut==='actif'?'kh-badge--green':'kh-badge--red'">{{ a.statut }}</span></td>
+          <td style="color:var(--text-secondary)">{{ a.debut }}</td>
+          <td [style.color]="a.statut==='expire'?'var(--red)':'var(--text-secondary)'">{{ a.fin }}</td>
+          <td><div class="actions"><button class="kh-btn kh-btn--ghost kh-btn--sm">Renouveler</button><button class="kh-btn kh-btn--danger kh-btn--sm">Suspendre</button></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

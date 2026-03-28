@@ -1,0 +1,175 @@
+<div class="landing">
+  <nav class="navbar">
+    <a class="nav-logo">
+      <div class="nav-logo-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <span class="nav-logo-name">KHOTWA</span>
+    </a>
+    <ul class="nav-menu">
+      <li *ngFor="let item of navItems"><a [href]="item.anchor">{{ item.label }}</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-ghost-sm" (click)="goLogin()">Sign in</button>
+      <button class="btn-orange-sm" (click)="goLogin()">Get started →</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge"><span class="badge-pulse"></span>Next-generation incubation platform</div>
+      <h1 class="hero-title">Launch your startup<br><em>without friction</em></h1>
+      <p class="hero-sub">The all-in-one platform for incubators, entrepreneurs and coaches — smart workflows, real-time tracking, automated certification.</p>
+      <div class="hero-actions">
+        <button class="btn-primary-lg" (click)="goLogin()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Start for free
+        </button>
+        <button class="btn-outline-lg" (click)="goLogin()">Explore the demo →</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-value">120+</span><span class="stat-label">Active projects</span></div>
+        <div class="stat"><span class="stat-value">98%</span><span class="stat-label">Satisfaction</span></div>
+        <div class="stat"><span class="stat-value">50+</span><span class="stat-label">Incubated startups</span></div>
+        <div class="stat"><span class="stat-value">2</span><span class="stat-label">Roles</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="roles-section" id="roles">
+    <div class="roles-inner">
+      <div class="section-header">
+        <span class="section-eyebrow">2 dedicated spaces</span>
+        <h2 class="section-title">A space for every actor</h2>
+        <p class="section-sub">KHOTWA adapts each interface to the user's exact role for an optimal experience.</p>
+      </div>
+      <div class="roles-grid">
+        <div *ngFor="let r of roles" class="role-card" [style.--rc]="r.color" (click)="loginAs(r.role)">
+          <div class="role-top">
+            <div class="role-emoji-bg">{{ r.emoji }}</div>
+            <p class="role-name">{{ r.name }}</p>
+            <p class="role-desc">{{ r.desc }}</p>
+          </div>
+          <div class="role-bottom">
+            <ul class="role-list">
+              <li *ngFor="let feat of r.features">
+                <div class="role-check-icon">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                {{ feat }}
+              </li>
+            </ul>
+            <button class="role-cta-btn">Access space →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-section" id="fonctionnalites">
+    <div class="features-inner">
+      <div style="text-align:center;margin-bottom:48px">
+        <span class="section-eyebrow">Everything you need</span>
+        <h2 class="section-title">Key features</h2>
+        <p class="section-sub" style="margin-bottom:0">Built for teams who want to move fast and structure their growth from day one.</p>
+      </div>
+      <div class="features-grid">
+        <div *ngFor="let f of features" class="feat-card">
+          <div class="feat-icon-wrap" [style.background]="f.bg">{{ f.icon }}</div>
+          <h3 class="feat-title">{{ f.title }}</h3>
+          <p class="feat-desc">{{ f.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="steps-section" id="processus">
+    <div class="steps-inner">
+      <div class="section-header">
+        <span class="section-eyebrow">Simple & effective</span>
+        <h2 class="section-title">How it works</h2>
+        <p class="section-sub">From registration to certification in 4 structured steps.</p>
+      </div>
+      <div class="steps-grid">
+        <div *ngFor="let s of steps" class="step-item">
+          <div class="step-circle" [class]="s.cls">{{ s.n }}</div>
+          <h3 class="step-title">{{ s.title }}</h3>
+          <p class="step-desc">{{ s.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="pricing-section" id="pricing">
+    <div class="pricing-inner">
+      <div class="section-header">
+        <span class="section-eyebrow">Simple pricing</span>
+        <h2 class="section-title">Choose your plan</h2>
+        <p class="section-sub">Start for free, scale as you grow. No hidden fees.</p>
+      </div>
+      <div class="pricing-grid">
+        <div *ngFor="let plan of plans" class="pricing-card" [class.pricing-card--featured]="plan.featured" [style.--pc]="plan.color">
+          <div class="pricing-header">
+            <span class="plan-badge" *ngIf="plan.badge">{{ plan.badge }}</span>
+            <div class="plan-icon">{{ plan.icon }}</div>
+            <h3 class="plan-name">{{ plan.name }}</h3>
+            <p class="plan-desc">{{ plan.desc }}</p>
+            <div class="plan-price">
+              <span class="price-amount">{{ plan.price }}</span>
+              <span class="price-period" *ngIf="plan.period">{{ plan.period }}</span>
+            </div>
+          </div>
+          <ul class="plan-features">
+            <li *ngFor="let feat of plan.features">
+              <div class="plan-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+              {{ feat }}
+            </li>
+          </ul>
+          <button class="plan-cta" [class.plan-cta--featured]="plan.featured" (click)="goLogin()">
+            {{ plan.cta }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="contact">
+    <div class="cta-inner">
+      <h2 class="cta-title">Ready to accelerate<br>your startup?</h2>
+      <p class="cta-sub">Join teams who trust KHOTWA to turn their ideas into measurable success. Start in less than 5 minutes.</p>
+      <div class="cta-btns">
+        <button class="btn-primary-lg" (click)="goLogin()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Access the platform
+        </button>
+        <button class="btn-outline-lg">Contact us →</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand-col">
+        <div class="footer-logo">
+          <div class="footer-logo-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+          <span class="footer-logo-name">KHOTWA</span>
+        </div>
+        <p class="footer-tagline">Multi-role incubation platform for ambitious entrepreneurs and dedicated coaches.</p>
+      </div>
+      <div><p class="footer-col-title">Product</p>
+        <ul class="footer-links-list">
+          <li><a href="#fonctionnalites">Features</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div><p class="footer-col-title">Support</p>
+        <ul class="footer-links-list">
+          <li><a href="#">Documentation</a></li>
+          <li><a href="#">Help center</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2024 KHOTWA. All rights reserved.</p>
+    </div>
+  </footer>
+</div>

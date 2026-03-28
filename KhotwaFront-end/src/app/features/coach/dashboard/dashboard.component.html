@@ -1,0 +1,37 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div><h1 class="kh-page-title">Coach Dashboard</h1><p class="page-sub">Welcome Ahmed — manage your supported startups</p></div>
+    <a routerLink="/coach/planning" class="kh-btn kh-btn--primary">📅 My availability</a>
+  </div>
+  <div class="kpi-grid animate-2">
+    <div class="kpi-card kpi-card--coach"><p class="kpi-value" style="color:white">3</p><p class="kpi-label" style="color:rgba(255,255,255,0.7)">Supported startups</p></div>
+    <div class="kpi-card"><p class="kpi-value">5</p><p class="kpi-label">Validations en attente</p></div>
+    <div class="kpi-card"><p class="kpi-value">8</p><p class="kpi-label">Sessions ce mois</p></div>
+    <div class="kpi-card"><p class="kpi-value kpi-alert">2</p><p class="kpi-label">Alertes SLA</p></div>
+  </div>
+  <div class="bottom-grid animate-3">
+    <div class="kh-card panel">
+      <div class="panel-header"><span class="kh-section-title">My Startups</span><a routerLink="/coach/startups" class="kh-btn kh-btn--ghost kh-btn--sm">View all</a></div>
+      <div *ngFor="let p of projets.slice(0,3)" class="startup-row">
+        <div class="startup-avatar">{{ p.titre[0] }}</div>
+        <div style="flex:1">
+          <p style="font-size:13px;font-weight:600">{{ p.titre }}</p>
+          <div class="kh-progress" style="margin-top:5px"><div class="kh-progress__fill kh-progress__fill--teal" [style.width.%]="p.progression"></div></div>
+        </div>
+        <strong style="font-size:12px;color:var(--teal)">{{ p.progression }}%</strong>
+      </div>
+    </div>
+    <div class="kh-card panel">
+      <div class="panel-header"><span class="kh-section-title">Validations en attente</span><a routerLink="/coach/validations" class="kh-btn kh-btn--primary kh-btn--sm">Traiter</a></div>
+      <div class="val-list">
+        <div *ngFor="let v of validations" class="val-item">
+          <div><p style="font-size:13px;font-weight:600">{{ v.tache }}</p><p style="font-size:11px;color:var(--text-muted)">{{ v.startup }}</p></div>
+          <div style="display:flex;gap:6px">
+            <button class="kh-btn kh-btn--sm" style="background:var(--green);color:white">✓</button>
+            <button class="kh-btn kh-btn--danger kh-btn--sm">✗</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

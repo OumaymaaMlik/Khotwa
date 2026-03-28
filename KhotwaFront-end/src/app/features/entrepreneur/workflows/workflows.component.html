@@ -1,0 +1,36 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div><h1 class="kh-page-title">Workflows Intelligents</h1><p class="page-sub">Automatisations actives sur vos projets</p></div>
+  </div>
+  <div class="kpi-row animate-2">
+    <div class="mini-kpi"><span>4</span>Workflows actifs</div>
+    <div class="mini-kpi"><span>289</span>Runs this month</div>
+    <div class="mini-kpi"><span>96%</span>Success rate</div>
+    <div class="mini-kpi mini-kpi--alert"><span>2</span>Alertes en attente</div>
+  </div>
+  <div class="wf-list animate-3">
+    <div *ngFor="let w of workflows" class="wf-card kh-card">
+      <div class="wf-left">
+        <div class="wf-icon" [style.background]="w.color + '22'" [style.color]="w.color">{{ w.icone }}</div>
+        <div>
+          <p class="wf-name">{{ w.nom }}</p>
+          <p class="wf-desc">{{ w.desc }}</p>
+        </div>
+      </div>
+      <div class="wf-etapes">
+        <ng-container *ngFor="let e of w.etapes; let last=last">
+          <div class="wf-step">
+            <div class="wf-step-dot" [style.background]="w.color"></div>
+            <span>{{ e }}</span>
+          </div>
+          <div *ngIf="!last" class="wf-step-arrow">→</div>
+        </ng-container>
+      </div>
+      <div class="wf-right">
+        <span class="kh-badge kh-badge--green">{{ w.statut }}</span>
+        <p class="wf-runs">{{ w.runs }} runs</p>
+        <p style="font-size:10px;color:var(--text-muted)">{{ w.trigger }}</p>
+      </div>
+    </div>
+  </div>
+</div>

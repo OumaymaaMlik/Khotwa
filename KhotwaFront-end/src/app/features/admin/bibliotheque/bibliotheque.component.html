@@ -1,0 +1,214 @@
+<div class="page animate-1">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="kh-page-title">Resource Library</h1>
+      <p class="page-sub">{{ stats.total }} total — {{ stats.published }} published</p>
+    </div>
+    <button class="kh-btn kh-btn--primary" (click)="openCreate()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Resource
+    </button>
+  </div>
+
+  <!-- KPI row -->
+  <div class="kpi-row animate-2">
+    <div class="kpi-card"><p class="kpi-value">{{ stats.total }}</p><p class="kpi-label">Total</p></div>
+    <div class="kpi-card"><p class="kpi-value" style="color:var(--green)">{{ stats.public }}</p><p class="kpi-label">Public</p></div>
+    <div class="kpi-card"><p class="kpi-value" style="color:var(--teal)">{{ stats.incubes }}</p><p class="kpi-label">Incubated</p></div>
+    <div class="kpi-card"><p class="kpi-value" style="color:var(--amber)">{{ stats.payant }}</p><p class="kpi-label">Premium</p></div>
+    <div class="kpi-card"><p class="kpi-value" style="color:#E84A4A">{{ stats.pdf }}</p><p class="kpi-label">PDFs</p></div>
+    <div class="kpi-card"><p class="kpi-value" style="color:var(--violet)">{{ stats.video }}</p><p class="kpi-label">Videos</p></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters animate-2">
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search by title…" [(ngModel)]="search" (input)="onSearch()" />
+    </div>
+    <div class="filter-chips">
+      <button class="tab" [class.active]="filterType==='ALL'" (click)="filterType='ALL';load()">All types</button>
+      <button class="tab" [class.active]="filterType==='PDF'" (click)="filterType='PDF';load()">📄 PDF</button>
+      <button class="tab" [class.active]="filterType==='VIDEO'" (click)="filterType='VIDEO';load()">🎥 Video</button>
+      <button class="tab" [class.active]="filterType==='EXCEL'" (click)="filterType='EXCEL';load()">📊 Excel</button>
+      <button class="tab" [class.active]="filterAccess==='ALL'" (click)="filterAccess='ALL';load()">All access</button>
+      <button class="tab" [class.active]="filterAccess==='PUBLIC'" (click)="filterAccess='PUBLIC';load()">Public</button>
+      <button class="tab" [class.active]="filterAccess==='INCUBES'" (click)="filterAccess='INCUBES';load()">Incubated</button>
+      <button class="tab" [class.active]="filterAccess==='PAYANT'" (click)="filterAccess='PAYANT';load()">Premium</button>
+      <button class="tab" [class.active]="filterPublie==='published'" (click)="filterPublie='published';load()">Published</button>
+      <button class="tab" [class.active]="filterPublie==='draft'" (click)="filterPublie='draft';load()">Draft</button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap animate-3">
+    <table>
+      <thead>
+        <tr>
+          <th>Resource</th><th>Type</th><th>Access</th><th>Category</th>
+          <th>Size</th><th>Views</th><th>Status</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of ressources">
+          <td>
+            <div class="res-name-cell">
+              <span class="res-type-icon">{{ typeIcons[r.type] }}</span>
+              <div>
+                <p style="font-weight:600;font-size:13px">{{ r.titre }}</p>
+                <p style="font-size:11px;color:var(--text-muted)">{{ r.nomFichierOriginal }}</p>
+              </div>
+            </div>
+          </td>
+          <td><span class="kh-badge kh-badge--gray">{{ r.type }}</span></td>
+          <td><span class="kh-badge" [class]="getAccessBadge(r.niveauAcces)">{{ r.niveauAcces }}</span></td>
+          <td style="font-size:12px;color:var(--text-secondary)">{{ r.categorie?.icone }} {{ r.categorie?.nom || '—' }}</td>
+          <td style="font-size:12px;color:var(--text-muted)">{{ r.tailleFormatee || '—' }}</td>
+          <td style="font-size:12px">{{ r.vues }}</td>
+          <td>
+            <button class="status-toggle" [class.published]="r.publie" (click)="togglePublie(r)">
+              {{ r.publie ? 'Published' : 'Draft' }}
+            </button>
+          </td>
+          <td>
+            <div class="actions">
+              <button class="kh-btn kh-btn--ghost kh-btn--sm kh-btn--icon" title="Edit" (click)="openEdit(r)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button class="kh-btn kh-btn--danger kh-btn--sm kh-btn--icon" title="Delete" (click)="confirmDelete(r)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="ressources.length===0">
+          <td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">No resources found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ ADD / EDIT FORM MODAL ══ -->
+<div class="modal-overlay" *ngIf="showForm" (click)="showForm=false">
+  <div class="modal-box kh-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ isEditing ? 'Edit Resource' : 'Add New Resource' }}</h2>
+      <button class="modal-close" (click)="showForm=false">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+
+        <!-- Title -->
+        <div class="form-group full">
+          <label>Title *</label>
+          <input type="text" [(ngModel)]="form.titre" placeholder="e.g. Business Plan Guide 2024" />
+        </div>
+
+        <!-- Description -->
+        <div class="form-group full">
+          <label>Description</label>
+          <textarea [(ngModel)]="form.description" placeholder="Brief description of the resource content…" rows="3"></textarea>
+        </div>
+
+        <!-- Type & Access -->
+        <div class="form-group">
+          <label>Type *</label>
+          <select [(ngModel)]="form.type">
+            <option *ngFor="let t of types" [value]="t">{{ typeIcons[t] }} {{ t }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Access Level *</label>
+          <select [(ngModel)]="form.niveauAcces">
+            <option value="PUBLIC">🌐 Public — everyone</option>
+            <option value="INCUBES">🔒 Incubated — incubees only</option>
+            <option value="PAYANT">💎 Premium — paid subscribers</option>
+          </select>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+          <label>Category</label>
+          <select [(ngModel)]="form.categorieId">
+            <option [ngValue]="null">— No category —</option>
+            <option *ngFor="let c of categories" [value]="c.id">{{ c.icone }} {{ c.nom }}</option>
+          </select>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group">
+          <label>Tags</label>
+          <input type="text" [(ngModel)]="form.tags" placeholder="BMC, Startup, Endance (comma separated)" />
+        </div>
+
+        <!-- File upload (not for LINK) -->
+        <div class="form-group full" *ngIf="form.type !== 'LINK'">
+          <label>File Upload</label>
+          <div class="file-upload-zone" (click)="fileInput.click()">
+            <input #fileInput type="file" style="display:none" (change)="onFileChange($event)" />
+            <span *ngIf="!selectedFile">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Click to select file or drag & drop</span>
+              <span class="file-hint">PDF, MP4, XLSX, DOCX up to 500 MB</span>
+            </span>
+            <span *ngIf="selectedFile" class="file-selected">
+              📎 {{ selectedFile.name }}
+              <span class="file-size">({{ (selectedFile.size/1048576).toFixed(1) }} MB)</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- URL Externe (only for LINK) -->
+        <div class="form-group full" *ngIf="form.type === 'LINK'">
+          <label>External URL</label>
+          <input type="url" [(ngModel)]="form.urlExterne" placeholder="https://example.com/resource" />
+        </div>
+
+        <!-- Duration (for VIDEO) -->
+        <div class="form-group" *ngIf="form.type === 'VIDEO'">
+          <label>Duration (seconds)</label>
+          <input type="number" [(ngModel)]="form.dureeSec" placeholder="e.g. 2700 = 45 min" min="0" />
+        </div>
+
+        <!-- Pages (for PDF/WORD) -->
+        <div class="form-group" *ngIf="form.type === 'PDF' || form.type === 'WORD'">
+          <label>Number of pages</label>
+          <input type="number" [(ngModel)]="form.nombrePages" placeholder="e.g. 45" min="1" />
+        </div>
+
+        <!-- Published toggle -->
+        <div class="form-group full">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="form.publie" />
+            <span>Publish immediately</span>
+            <span class="checkbox-hint">Unpublished resources are saved as drafts</span>
+          </label>
+        </div>
+
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="kh-btn kh-btn--primary" (click)="submitForm()" [disabled]="!form.titre">
+        {{ isEditing ? 'Save Changes' : 'Add Resource' }}
+      </button>
+      <button class="kh-btn kh-btn--ghost" (click)="showForm=false">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DELETE CONFIRM ══ -->
+<div class="modal-overlay" *ngIf="showDeleteConfirm" (click)="cancelDelete()">
+  <div class="confirm-box kh-card" (click)="$event.stopPropagation()">
+    <div class="confirm-icon">🗑️</div>
+    <h3>Delete resource?</h3>
+    <p>You are about to delete <strong>{{ deleteTarget?.titre }}</strong>. This action cannot be undone.</p>
+    <div class="confirm-actions">
+      <button class="kh-btn kh-btn--danger" (click)="doDelete()">Yes, delete</button>
+      <button class="kh-btn kh-btn--ghost" (click)="cancelDelete()">Cancel</button>
+    </div>
+  </div>
+</div>
