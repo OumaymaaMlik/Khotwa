@@ -1,21 +1,108 @@
 <div class="page animate-1">
   <div class="page-header">
     <div><h1 class="kh-page-title">My Projects</h1><p class="page-sub">{{ filteredProjets.length }} project(s) — parcours de labellisation</p></div>
-    <button class="kh-btn kh-btn--primary">+ Create a project</button>
+    <button class="kh-btn kh-btn--primary" (click)="toggleCreateForm()">{{ showCreateForm ? 'Close' : '+ Create a project' }}</button>
   </div>
+
+  <div *ngIf="showCreateForm" class="create-card kh-card animate-2">
+    <div class="create-title-row">
+      <h2>Create New Project</h2>
+      <span class="small-note">Minimum one initial task is required</span>
+    </div>
+
+    <div class="create-grid">
+      <label class="field">
+        <span>Project Name *</span>
+        <input class="kh-input" [(ngModel)]="createForm.nom" name="nom" maxlength="150" placeholder="Ex: Smart Logistics Platform" />
+      </label>
+
+      <label class="field">
+        <span>Status</span>
+        <select class="kh-input" [(ngModel)]="createForm.statut" name="statut">
+          <option value="in_progress">In progress</option>
+          <option value="suspended">Suspended</option>
+          <option value="completed">Completed</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="field">
+      <span>Description</span>
+      <textarea class="kh-input" [(ngModel)]="createForm.description" name="description" rows="3" maxlength="500" placeholder="Short project description"></textarea>
+    </label>
+
+    <div class="tasks-header">
+      <h3>Initial Tasks</h3>
+      <button class="kh-btn kh-btn--ghost kh-btn--sm" (click)="addTask()">+ Add Task</button>
+    </div>
+
+    <div class="tasks-list">
+      <div class="task-row" *ngFor="let task of createForm.tachesInitiales; let i = index; trackBy: trackByTaskIndex">
+        <label class="field">
+          <span>Task Title *</span>
+          <input class="kh-input" [(ngModel)]="task.titre" [name]="'taskTitle' + i" maxlength="200" placeholder="Ex: Market validation" />
+        </label>
+
+        <label class="field">
+          <span>Priority</span>
+          <select class="kh-input" [(ngModel)]="task.priorite" [name]="'taskPriority' + i">
+            <option value="BASSE">Low</option>
+            <option value="MOYENNE">Medium</option>
+            <option value="HAUTE">High</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Task Status</span>
+          <select class="kh-input" [(ngModel)]="task.statut" [name]="'taskStatus' + i">
+            <option value="A_FAIRE">To do</option>
+            <option value="EN_COURS">In progress</option>
+            <option value="BLOQUEE">Blocked</option>
+            <option value="TERMINEE">Done</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Due Date</span>
+          <input class="kh-input" type="date" [(ngModel)]="task.dateLimite" [name]="'taskDate' + i" />
+        </label>
+
+        <label class="field task-description">
+          <span>Task Description</span>
+          <textarea class="kh-input" [(ngModel)]="task.description" [name]="'taskDescription' + i" rows="2" maxlength="1000" placeholder="Optional task details"></textarea>
+        </label>
+
+        <button class="kh-btn kh-btn--ghost kh-btn--sm remove-task" [disabled]="createForm.tachesInitiales.length === 1" (click)="removeTask(i)">Remove</button>
+      </div>
+    </div>
+
+    <p *ngIf="createError" class="create-error">{{ createError }}</p>
+    <p *ngIf="createSuccess" class="create-success">{{ createSuccess }}</p>
+
+    <div class="create-actions">
+      <button class="kh-btn kh-btn--ghost" (click)="toggleCreateForm()">Cancel</button>
+      <button class="kh-btn kh-btn--primary" [disabled]="isSubmitting" (click)="submitCreateProject()">
+        {{ isSubmitting ? 'Creating...' : 'Create Project' }}
+      </button>
+    </div>
+  </div>
+
   <div class="filters animate-2">
     <button class="tab" [class.active]="filtre==='tous'" (click)="filtre='tous'">Tous</button>
-    <button class="tab" [class.active]="filtre==='en_cours'" (click)="filtre='en_cours'">En cours</button>
-    <button class="tab" [class.active]="filtre==='suspendu'" (click)="filtre='suspendu'">Suspendu</button>
-    <button class="tab" [class.active]="filtre==='termine'" (click)="filtre='termine'">Completed</button>
+    <button class="tab" [class.active]="filtre==='in_progress'" (click)="filtre='in_progress'">En cours</button>
+    <button class="tab" [class.active]="filtre==='suspended'" (click)="filtre='suspended'">Suspendu</button>
+    <button class="tab" [class.active]="filtre==='completed'" (click)="filtre='completed'">Completed</button>
   </div>
+
+  <p *ngIf="loadingProjects" class="small-note">Loading projects from server...</p>
+
   <div class="proj-list animate-3">
     <div *ngFor="let p of filteredProjets" class="proj-card kh-card">
-      <div class="proj-accent" [style.background]="p.statut==='en_cours'?'linear-gradient(180deg,#2ABFBF,#1a9999)':p.statut==='termine'?'linear-gradient(180deg,#27AE7A,#1a8a5e)':'linear-gradient(180deg,#F5A623,#d4881e)'"></div>
+      <div class="proj-accent" [style.background]="p.statut==='in_progress'?'linear-gradient(180deg,#2ABFBF,#1a9999)':p.statut==='completed'?'linear-gradient(180deg,#27AE7A,#1a8a5e)':'linear-gradient(180deg,#F5A623,#d4881e)'"></div>
       <div class="proj-content">
         <div class="proj-header">
           <div><h3 class="proj-name">{{ p.titre }}</h3><p class="proj-desc">{{ p.description }}</p></div>
-          <span class="kh-badge" [class]="p.statut==='en_cours'?'kh-badge--teal':p.statut==='termine'?'kh-badge--green':'kh-badge--amber'">{{ p.statut }}</span>
+          <span class="kh-badge" [class]="p.statut==='in_progress'?'kh-badge--teal':p.statut==='completed'?'kh-badge--green':'kh-badge--amber'">{{ getStatusLabel(p.statut) }}</span>
         </div>
         <ng-container *ngIf="p.etapes.length > 0">
           <div class="etapes-timeline">
