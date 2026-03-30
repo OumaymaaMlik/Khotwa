@@ -1,4 +1,10 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
+  data:
+    web:
+      pageable:
+        serialization-mode: via-dto
   datasource:
     url: jdbc:mysql://localhost:3306/khotwa_db
     username: root

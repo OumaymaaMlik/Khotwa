@@ -9,7 +9,16 @@ const MOCK_USERS: User[] = [
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  currentUser: User | null = MOCK_USERS[0];
+  currentUser: User | null = null;
+
+  constructor() {
+    const saved = localStorage.getItem('currentUser');
+    if (saved) {
+      this.currentUser = JSON.parse(saved);
+    } else {
+      this.currentUser = MOCK_USERS[1]; 
+    }
+  }
 
   get role(): UserRole | null { return this.currentUser?.role ?? null; }
   get isAdmin(): boolean { return this.currentUser?.role === 'admin'; }
@@ -18,8 +27,13 @@ export class AuthService {
 
   login(role: UserRole): void {
     this.currentUser = MOCK_USERS.find(u => u.role === role) ?? null;
+    localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
   }
-  logout(): void { this.currentUser = null; }
+
+  logout(): void {
+    this.currentUser = null;
+    localStorage.removeItem('currentUser');
+  }
 
   getDefaultRoute(): string {
     const r = this.currentUser?.role;

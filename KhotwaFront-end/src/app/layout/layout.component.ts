@@ -75,6 +75,6 @@ export class LayoutComponent implements OnInit {
   isActive(item: NavItem): boolean { return this.currentUrl.includes(`/${item.route}`); }
   switchRole(role: UserRole) { this.auth.login(role); this.router.navigateByUrl(this.auth.getDefaultRoute()); }
   logout() { this.auth.logout(); this.router.navigateByUrl('/'); }
-  get nonLus(): number { return this.notifService.nonLus(); }
-  get notifs() { return this.notifService.notifs(); }
+  get nonLus(): number { return Math.min(this.notifService.nonLus(), 99); }
+  get notifs() { return this.notifService.latestFive(); }
 }

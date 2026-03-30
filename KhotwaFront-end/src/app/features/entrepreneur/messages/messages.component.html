@@ -4,10 +4,10 @@
     <div class="conv-panel kh-card">
       <div class="conv-search">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        <input type="text" placeholder="Search…" />
+        <input type="text" placeholder="Search…" [(ngModel)]="searchQuery" />
       </div>
       <div class="conv-list">
-        <div *ngFor="let c of conversations" class="conv-item" [class.active]="selectedConv?.id===c.id" (click)="selectConv(c)">
+          <div *ngFor="let c of filteredConversations" class="conv-item" [class.active]="selectedConv?.id===c.id" (click)="selectConv(c)">
           <div class="conv-avatar" [style.background]="c.color">{{ c.initials }}</div>
           <div class="conv-info">
             <div class="conv-top"><span class="conv-name">{{ c.nom }}</span><span class="conv-time">{{ c.time }}</span></div>
@@ -25,17 +25,39 @@
         </div>
         <div class="messages-body">
           <div *ngFor="let m of selectedConv.messages" class="msg-wrap" [class.mine]="m.mine">
-            <div class="msg-bubble" [class.mine]="m.mine">
-              <p>{{ m.text }}</p>
-              <span class="msg-time">{{ m.time }}</span>
+            <div class="msg-bubble-wrap">
+              <button *ngIf="!m.deleted" class="msg-delete-btn" (click)="confirmDelete(m)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+              </button>
+              <div class="msg-bubble" [class.mine]="m.mine" [class.deleted]="m.deleted">
+                <p>{{ m.deleted ? 'message deleted' : m.text }}</p>
+                <a *ngIf="m.fileUrl && !m.deleted" [href]="m.fileUrl" target="_blank" style="display:block;font-size:11px;margin-top:6px;opacity:0.8;">
+                  📎 View attachment
+                </a>
+                <span class="msg-time">{{ m.time }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="popup-overlay" *ngIf="showDeletePopup">
+          <div class="popup">
+            <p class="popup-title">Delete message?</p>
+            <p class="popup-msg">{{ pendingDeleteMsg?.mine ? 'Delete for everyone or just for you?' : 'This will only remove the message for you.' }}</p>
+            <div class="popup-actions">
+              <button class="popup-btn popup-btn--cancel" (click)="cancelDelete()">Cancel</button>
+              <button *ngIf="pendingDeleteMsg?.mine" class="popup-btn popup-btn--soft" (click)="deleteForMe()">Delete for me</button>
+              <button class="popup-btn popup-btn--danger" (click)="pendingDeleteMsg?.mine ? deleteForAll() : deleteForMe()">
+                {{ pendingDeleteMsg?.mine ? 'Delete for everyone' : 'Delete' }}
+              </button>
             </div>
           </div>
         </div>
         <div class="chat-input">
-          <button class="input-icon-btn">
+          <input #fileInput type="file" style="display:none" (change)="onFileSelected($event)" />
+          <button class="input-icon-btn" (click)="triggerFileInput()" [style.color]="pendingFile ? 'var(--orange)' : ''">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
           </button>
-          <input type="text" placeholder="Write a message…" [(ngModel)]="newMsg" (keydown)="onMsgKey($event)" />
+          <input type="text" [placeholder]="pendingFile ? '📎 ' + pendingFile.name + ' — add a message or send' : 'Write a message…'" [(ngModel)]="newMsg" (keydown)="onMsgKey($event)" />
           <button class="send-btn" (click)="sendMsg()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>

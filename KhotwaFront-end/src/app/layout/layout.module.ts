@@ -8,4 +8,5 @@ import { LayoutComponent } from './layout.component';
   imports: [CommonModule, RouterModule],
   exports: [LayoutComponent],
 })
+
 export class LayoutModule {}

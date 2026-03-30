@@ -12,6 +12,7 @@ import { EntrepreneurPlanningComponent }    from './planning/planning.component'
 import { EntrepreneurMessagesComponent }    from './messages/messages.component';
 import { EntrepreneurBibliothequeComponent } from './bibliotheque/bibliotheque.component';
 import { EntrepreneurTalentComponent }       from './talent/talent.component';
+import { EntrepreneurNotificationsComponent } from './notifications/notifications.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,7 @@ const routes: Routes = [
       { path: 'messages',     component: EntrepreneurMessagesComponent },
       { path: 'bibliotheque', component: EntrepreneurBibliothequeComponent },
       { path: 'talent',       component: EntrepreneurTalentComponent },
+      { path: 'notifications', component: EntrepreneurNotificationsComponent },
     ],
   },
 ];
@@ -34,7 +36,7 @@ const routes: Routes = [
   declarations: [
     EntrepreneurDashboardComponent, EntrepreneurProjetsComponent, EntrepreneurWorkflowsComponent,
     EntrepreneurPlanningComponent, EntrepreneurMessagesComponent, EntrepreneurBibliothequeComponent,
-    EntrepreneurTalentComponent,
+    EntrepreneurTalentComponent, EntrepreneurNotificationsComponent,
   ],
   imports: [CommonModule, FormsModule, LayoutModule, RouterModule.forChild(routes)],
 })

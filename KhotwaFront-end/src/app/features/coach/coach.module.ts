@@ -13,6 +13,7 @@ import { CoachPlanningComponent }      from './planning/planning.component';
 import { CoachMessagesComponent }      from './messages/messages.component';
 import { CoachBibliothequeComponent }  from './bibliotheque/bibliotheque.component';
 import { CoachTalentComponent }         from './talent/talent.component';
+import { CoachNotificationsComponent } from './notifications/notifications.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,7 @@ const routes: Routes = [
       { path: 'messages',     component: CoachMessagesComponent },
       { path: 'bibliotheque', component: CoachBibliothequeComponent },
       { path: 'talent',       component: CoachTalentComponent },
+      { path: 'notifications', component: CoachNotificationsComponent },
     ],
   },
 ];
@@ -36,7 +38,7 @@ const routes: Routes = [
   declarations: [
     CoachDashboardComponent, CoachProjetsComponent, CoachStartupsComponent,
     CoachValidationsComponent, CoachPlanningComponent, CoachMessagesComponent, CoachBibliothequeComponent,
-    CoachTalentComponent,
+    CoachTalentComponent, CoachNotificationsComponent,
   ],
   imports: [CommonModule, FormsModule, LayoutModule, RouterModule.forChild(routes)],
 })
