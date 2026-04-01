@@ -1,0 +1,30 @@
+<div class="page animate-1">
+  <div class="page-header"><h1 class="kh-page-title">Proof-Based Validations</h1><p class="page-sub">Review and validate submitted tasks</p></div>
+  <div class="val-list animate-2">
+    <div *ngFor="let v of validations" class="val-card kh-card" [class.done]="v.statut!=='en_attente'">
+      <div class="val-left">
+        <div class="val-status-icon">
+          <span *ngIf="v.statut==='valide'">✅</span>
+          <span *ngIf="v.statut==='rejete'">❌</span>
+          <span *ngIf="v.statut==='en_attente'">⏳</span>
+        </div>
+        <div>
+          <p class="val-tache">{{ v.tache }}</p>
+          <p class="val-startup">{{ v.startup }}</p>
+          <p class="val-date">Soumis le {{ v.date }}</p>
+        </div>
+      </div>
+      <div class="val-doc">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span>{{ v.doc }}</span>
+      </div>
+      <div class="val-actions">
+        <ng-container *ngIf="v.statut==='en_attente'">
+          <button class="kh-btn kh-btn--sm" style="background:var(--green);color:white" (click)="validate(v.id)">✓ Validate</button>
+          <button class="kh-btn kh-btn--danger kh-btn--sm" (click)="reject(v.id)">✗ Rejeter</button>
+        </ng-container>
+        <span *ngIf="v.statut!=='en_attente'" class="kh-badge" [class]="v.statut==='valide'?'kh-badge--green':'kh-badge--red'">{{ v.statut }}</span>
+      </div>
+    </div>
+  </div>
+</div>

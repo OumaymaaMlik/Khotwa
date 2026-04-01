@@ -1,0 +1,27 @@
+
+.page { display:flex;flex-direction:column;gap:24px; }
+.page-header { display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px; }
+.page-sub { color:var(--text-secondary);margin-top:4px; }
+.filters { display:flex;align-items:center;gap:8px;flex-wrap:wrap; }
+.search-box { display:flex;align-items:center;gap:8px;background:white;border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 12px;font-family:inherit; }
+.search-box input { border:none;outline:none;font-size:13px;font-family:inherit;min-width:180px; }
+.tab { padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--text-secondary);transition:all 0.15s; }
+.tab.active { background:var(--orange);color:white; }
+.grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px; }
+.card { padding:22px;background:white;border-radius:var(--radius-lg);border:1px solid var(--border);transition:all 0.2s;box-shadow:var(--shadow-card); }
+.card:hover { box-shadow:var(--shadow-hover);transform:translateY(-2px); }
+.card-top { display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px; }
+.card-icon { width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center; }
+.card-name { font-family:"Plus Jakarta Sans",sans-serif;font-size:15px;font-weight:700;margin-bottom:4px; }
+.card-meta { font-size:12px;color:var(--text-secondary); }
+.card-progress { margin:14px 0 8px; }
+.card-footer { display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--border); }
+.actions { display:flex;gap:6px; }
+.empty { text-align:center;padding:60px 20px;color:var(--text-muted); }
+.empty svg { margin:0 auto 12px;display:block;opacity:0.3; }
+.table-wrap { background:white;border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden; }
+table { width:100%;border-collapse:collapse; }
+th { padding:12px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);background:var(--bg-app);text-align:left; }
+td { padding:13px 16px;font-size:13px;border-top:1px solid var(--border); }
+tr:hover td { background:rgba(0,0,0,0.015); }
+

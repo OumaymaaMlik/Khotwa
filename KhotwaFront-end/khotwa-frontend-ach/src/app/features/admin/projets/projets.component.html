@@ -1,0 +1,40 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div><h1 class="kh-page-title">Gestion des Projets</h1><p class="page-sub">{{ filteredProjets.length }} project(s)</p></div>
+    <button class="kh-btn kh-btn--primary">+ New project</button>
+  </div>
+  <div class="filters animate-2">
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search…" [(ngModel)]="search" />
+    </div>
+    <button class="tab" [class.active]="filtre==='tous'" (click)="filtre='tous'">Tous</button>
+    <button class="tab" [class.active]="filtre==='en_cours'" (click)="filtre='en_cours'">En cours</button>
+    <button class="tab" [class.active]="filtre==='suspendu'" (click)="filtre='suspendu'">Suspendu</button>
+    <button class="tab" [class.active]="filtre==='termine'" (click)="filtre='termine'">Completed</button>
+  </div>
+  <div class="grid animate-3">
+    <div *ngFor="let p of filteredProjets" class="card">
+      <div class="card-top">
+        <div class="card-icon" [style.background]="p.statut==='en_cours'?'linear-gradient(135deg,#2ABFBF,#1a9999)':p.statut==='termine'?'linear-gradient(135deg,#27AE7A,#1a8a5e)':'linear-gradient(135deg,#F5A623,#d4881e)'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <span class="kh-badge" [class]="p.statut==='en_cours'?'kh-badge--teal':p.statut==='termine'?'kh-badge--green':'kh-badge--amber'">{{ p.statut }}</span>
+      </div>
+      <p class="card-name">{{ p.titre }}</p>
+      <p class="card-meta">{{ p.description }}</p>
+      <div class="card-progress">
+        <div class="kh-progress"><div class="kh-progress__fill" [style.width.%]="p.progression"></div></div>
+        <div style="display:flex;justify-content:space-between;margin-top:5px"><span style="font-size:11px;color:var(--text-muted)">Progression</span><strong style="font-size:12px">{{ p.progression }}%</strong></div>
+      </div>
+      <div class="card-footer">
+        <span style="font-size:11px;color:var(--text-muted)">{{ p.etapes.length }} step(s)</span>
+        <div class="actions">
+          <button class="kh-btn kh-btn--ghost kh-btn--sm kh-btn--icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          <button class="kh-btn kh-btn--danger kh-btn--sm kh-btn--icon" (click)="delete(p.id)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="filteredProjets.length===0" class="empty" style="grid-column:1/-1">No projects found</div>
+  </div>
+</div>

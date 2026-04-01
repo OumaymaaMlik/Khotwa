@@ -1,0 +1,288 @@
+<div class="page animate-1">
+
+  <div class="page-header">
+    <div><h1 class="kh-page-title">Resource Library</h1><p class="page-sub">{{ ressources.length }} resource(s) available</p></div>
+  </div>
+
+  <div class="lib-stats animate-2">
+    <div class="lib-stat"><span class="lib-stat__val">{{ stats.total || 0 }}</span><span class="lib-stat__label">Total</span></div>
+    <div class="lib-stat"><span class="lib-stat__val" style="color:var(--green)">{{ stats.public || 0 }}</span><span class="lib-stat__label">Public</span></div>
+    <div class="lib-stat"><span class="lib-stat__val" style="color:var(--teal)">{{ stats.incubes || 0 }}</span><span class="lib-stat__label">Incubated</span></div>
+    <div class="lib-stat"><span class="lib-stat__val" style="color:var(--amber)">{{ stats.payant || 0 }}</span><span class="lib-stat__label">Premium</span></div>
+  </div>
+
+  <div class="filters animate-2">
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search resources…" [(ngModel)]="search" (input)="onSearch()" />
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Type</span>
+      <button class="tab" [class.active]="filterType==='ALL'" (click)="filterType='ALL';load()">All</button>
+      <button class="tab" [class.active]="filterType==='PDF'" (click)="filterType='PDF';load()">📄 PDF</button>
+      <button class="tab" [class.active]="filterType==='VIDEO'" (click)="filterType='VIDEO';load()">🎥 Video</button>
+      <button class="tab" [class.active]="filterType==='EXCEL'" (click)="filterType='EXCEL';load()">📊 Excel</button>
+    </div>
+   <!--  <div class="filter-group">
+      <span class="filter-label">Access</span>
+      <button class="tab" [class.active]="filterAccess==='ALL'" (click)="filterAccess='ALL';load()">All</button>
+      <button class="tab" [class.active]="filterAccess==='PUBLIC'" (click)="filterAccess='PUBLIC';load()">🌐 Public</button>
+      <button class="tab" [class.active]="filterAccess==='INCUBES'" (click)="filterAccess='INCUBES';load()">🔒 Incubated</button>
+      <button class="tab" [class.active]="filterAccess==='PAYANT'" (click)="filterAccess='PAYANT';load()">💎 Premium</button>
+    </div> -->
+    <div class="filter-group" *ngIf="categories.length">
+      <span class="filter-label">Category</span>
+      <button class="tab" [class.active]="filterCategorieId===null" (click)="filterCategorieId=null;load()">All</button>
+      <button class="tab" *ngFor="let c of categories" [class.active]="filterCategorieId===c.id" (click)="filterCategorieId=c.id;load()">{{ c.icone }} {{ c.nom }}</button>
+    </div>
+  </div>
+
+  <!-- Vue toggle -->
+  <div class="view-toggle-row">
+    <button [class.active]="view==='grid'"    (click)="view='grid'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Grid
+    </button>
+    <button [class.active]="view==='folders'" (click)="view='folders'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Folders
+    </button>
+  </div>
+
+  <div *ngIf="loading" style="text-align:center;padding:40px;color:var(--text-muted)">Loading resources…</div>
+  <div *ngIf="error" style="padding:16px;background:#FCEBEB;border-radius:8px;color:#791F1F;font-size:13px">{{ error }}</div>
+
+  <div class="res-grid animate-3" *ngIf="view==='grid'">
+    <div *ngFor="let r of ressources" class="res-card kh-card" (click)="openViewer(r)">
+      <div class="res-card__top">
+        <div class="res-icon">{{ typeIcons[r.type] || '📁' }}</div>
+        <div class="res-badges">
+          <span class="kh-badge" [class]="getAccessBadge(r.niveauAcces)">{{ r.niveauAcces }}</span>
+          <span *ngIf="r.categorie" class="kh-badge kh-badge--gray">{{ r.categorie.nom }}</span>
+        </div>
+      </div>
+      <h3 class="res-titre">{{ r.titre }}</h3>
+      <p class="res-desc">{{ r.description }}</p>
+      <div class="res-meta">
+        <span>{{ r.tailleFormatee || (r.dureeSec ? (r.dureeSec/60|number:'1.0-0') + ' min' : '') }}</span>
+        <span style="color:var(--text-muted)">{{ r.vues }} views</span>
+      </div>
+      <ng-container *ngIf="r.maProgression && r.maProgression.pourcentage > 0">
+        <div class="prog-row">
+          <span class="prog-label" [style.color]="getProgressColor(r.maProgression.statut)">
+            <ng-container [ngSwitch]="r.maProgression.statut">
+              <ng-container *ngSwitchCase="'COMPLETED'">✓ Completed</ng-container>
+              <ng-container *ngSwitchCase="'IN_PROGRESS'">In progress</ng-container>
+              <ng-container *ngSwitchDefault>Not started</ng-container>
+            </ng-container>
+          </span>
+          <span class="prog-pct">{{ r.maProgression.pourcentage }}%</span>
+        </div>
+        <div class="kh-progress">
+          <div class="kh-progress__fill" [style.width.%]="r.maProgression.pourcentage" [style.background]="getProgressColor(r.maProgression.statut)"></div>
+        </div>
+      </ng-container>
+      <div *ngIf="r.tags?.length" class="res-tags">
+        <span *ngFor="let t of r.tags" class="res-tag">{{ t.nom }}</span>
+      </div>
+      <div class="res-card-actions">
+        <div class="res-open-hint">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Click to open
+        </div>
+        <button *ngIf="r.urlFichier || (r | json).includes('urlExterne')"
+                class="download-btn"
+                title="Download"
+                (click)="$event.stopPropagation(); downloadRessource(r)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </button>
+      </div>
+    </div>
+    <div *ngIf="ressources.length === 0 && !loading" class="empty-state"><p>No resources found.</p></div>
+  </div>
+</div>
+
+  <!-- ══ VUE DOSSIERS — même structure que admin ══ -->
+  <div class="folders-view animate-3" *ngIf="view==='folders' && !loading">
+  <ng-container *ngFor="let folder of folders">
+
+    <ng-container *ngIf="folder.name !== '__solo__'">
+      <div class="folder-row" (click)="toggleFolder(folder)">
+        <div class="folder-icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <div class="folder-meta">
+          <span class="folder-name">{{ folder.name }}</span>
+          <span class="folder-count">{{ folder.fichiers.length }} file{{ folder.fichiers.length > 1 ? 's' : '' }}</span>
+        </div>
+        <svg class="folder-chevron" [class.open]="folder.expanded" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+
+      <div class="folder-files" *ngIf="folder.expanded">
+        <div *ngFor="let r of folder.fichiers" class="folder-file-row" (click)="openViewer(r)">
+          <span class="ff-icon">{{ typeIcons[r.type] }}</span>
+          
+          <div class="ff-info">
+            <span class="ff-name">{{ r.titre.split(' — ')[1] || r.titre }}</span>
+            <span class="ff-size">{{ r.tailleFormatee || (r.dureeSec ? (r.dureeSec/60|number:'1.0-0') + ' min' : '') }}</span>
+          </div>
+
+          <div class="ff-side-actions">
+            <span class="kh-badge" [class]="getAccessBadge(r.niveauAcces)">{{ r.niveauAcces }}</span>
+            
+            <div class="prog-cell" *ngIf="r.maProgression && r.maProgression.pourcentage > 0">
+              <span class="prog-pct-sm" [style.color]="getProgressColor(r.maProgression.statut)">
+                {{ r.maProgression.pourcentage }}%
+              </span>
+            </div>
+
+            <button class="ff-dl-btn" 
+                    (click)="$event.stopPropagation(); downloadRessource(r)"
+                    *ngIf="r.urlFichier">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="folder.name === '__solo__'">
+      <div class="solo-label" *ngIf="folders.length > 1">Individual resources</div>
+      <div *ngFor="let r of folder.fichiers" class="folder-file-row solo-row" (click)="openViewer(r)">
+        <span class="ff-icon">{{ typeIcons[r.type] }}</span>
+        <div class="ff-info">
+          <span class="ff-name">{{ r.titre }}</span>
+          <span class="ff-size">{{ r.tailleFormatee || (r.dureeSec ? (r.dureeSec/60|number:'1.0-0') + ' min' : '') }}</span>
+        </div>
+        <div class="ff-side-actions">
+          <span class="kh-badge" [class]="getAccessBadge(r.niveauAcces)">{{ r.niveauAcces }}</span>
+          <button class="ff-dl-btn" (click)="$event.stopPropagation(); downloadRessource(r)" *ngIf="r.urlFichier">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+  </ng-container>
+</div>
+
+<!-- ══ VIEWER ══════════════════════════════════════════════════════ -->
+<div class="viewer-overlay" *ngIf="showViewer" (click)="$event.target === $event.currentTarget && closeViewer()">
+  <div class="viewer-box">
+
+    <!-- Header -->
+    <div class="viewer-header">
+      <div class="viewer-title">
+        <span>{{ typeIcons[viewerRessource?.type || 'PDF'] }}</span>
+        <span>{{ viewerRessource?.titre }}</span>
+        <span *ngIf="viewerRessource?.maProgression && viewerRessource!.maProgression!.pourcentage > 0"
+              class="viewer-prog-badge"
+              [style.background]="getProgressColor(viewerRessource!.maProgression!.statut) + '22'"
+              [style.color]="getProgressColor(viewerRessource!.maProgression!.statut)">
+          {{ viewerRessource!.maProgression!.pourcentage }}%
+        </span>
+      </div>
+      <div class="viewer-header-right">
+        <span *ngIf="viewerType === 'video'" class="viewer-autosave-info">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Auto-saved every 10s
+        </span>
+        <button *ngIf="viewerRessource"
+                class="viewer-dl-btn"
+                title="Download"
+                (click)="downloadRessource(viewerRessource)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </button>
+        <button class="viewer-close" (click)="closeViewer()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="viewer-prog-bar" *ngIf="viewerRessource?.maProgression && viewerRessource!.maProgression!.pourcentage > 0">
+      <div class="viewer-prog-fill"
+           [style.width.%]="viewerRessource!.maProgression!.pourcentage"
+           [style.background]="getProgressColor(viewerRessource!.maProgression!.statut)"></div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="viewerLoading" class="viewer-loading">
+      <div class="viewer-spinner"></div>
+      <p>Loading file…</p>
+    </div>
+
+    <!-- ── VIDEO ── -->
+    <div class="viewer-content" *ngIf="viewerType === 'video' && !viewerLoading">
+      <video #videoPlayer class="viewer-video" [src]="viewerUrl" controls (loadedmetadata)="onVideoLoaded()" preload="metadata">
+        Your browser does not support HTML5 video.
+      </video>
+      <p class="viewer-resume-hint" *ngIf="resumeAt > 0">▶ Resuming from {{ resumeAt | number:'1.0-0' }}s</p>
+    </div>
+
+    <!-- ── PDF avec PDF.js — navigation page par page ── -->
+    <div class="viewer-content viewer-content--pdf" *ngIf="viewerType === 'pdf' && !viewerLoading">
+
+      <!-- Contrôles PDF -->
+      <div class="pdf-controls" *ngIf="pdfDoc">
+        <button class="pdf-nav-btn" (click)="pdfPrevPage()" [disabled]="pdfCurrentPage <= 1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="pdf-page-info">
+          <span class="pdf-page-current">{{ pdfCurrentPage }}</span>
+          <span class="pdf-page-sep">/</span>
+          <span class="pdf-page-total">{{ pdfTotalPages }}</span>
+          <span class="pdf-page-label">pages</span>
+        </div>
+        <button class="pdf-nav-btn" (click)="pdfNextPage()" [disabled]="pdfCurrentPage >= pdfTotalPages">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <!-- Progress inline -->
+        <div class="pdf-inline-prog">
+          <div class="kh-progress" style="width:120px">
+            <div class="kh-progress__fill kh-progress__fill--teal"
+                 [style.width.%]="(pdfCurrentPage / pdfTotalPages) * 100"></div>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:var(--teal)">
+            {{ (pdfCurrentPage / pdfTotalPages * 100) | number:'1.0-0' }}%
+          </span>
+        </div>
+      </div>
+
+      <!-- Canvas PDF.js -->
+      <div class="pdf-canvas-wrap">
+        <canvas #pdfCanvas class="pdf-canvas"></canvas>
+        <div *ngIf="!pdfDoc && !viewerLoading" class="viewer-loading">
+          <div class="viewer-spinner"></div>
+          <p>Rendering PDF…</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── IMAGE ── -->
+    <div class="viewer-content viewer-content--center" *ngIf="viewerType === 'image' && !viewerLoading">
+      <img *ngIf="rawBlobUrl" [src]="rawBlobUrl" class="viewer-img" alt="resource image" />
+    </div>
+
+    <!-- ── AUTRE ── -->
+    <div class="viewer-content viewer-content--center" *ngIf="viewerType === 'other'">
+      <div class="viewer-download-prompt">
+        <span class="viewer-dl-icon">{{ typeIcons[viewerRessource?.type || 'PDF'] }}</span>
+        <h3>{{ viewerRessource?.titre }}</h3>
+        <p>This file type cannot be previewed in the browser.</p>
+        <a [href]="viewerUrl" target="_blank" download class="kh-btn kh-btn--primary">📥 Download file</a>
+      </div>
+    </div>
+
+  </div>
+</div>

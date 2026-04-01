@@ -1,0 +1,41 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div><h1 class="kh-page-title">Mon Espace Entrepreneur</h1><p class="page-sub">Bienvenue Sara — suivez votre progression</p></div>
+    <a routerLink="/entrepreneur/projets" class="kh-btn kh-btn--primary">+ New project</a>
+  </div>
+  <div class="kpi-grid animate-2">
+    <div class="kpi-card kpi-card--primary">
+      <p class="kpi-value" style="color:white">{{ enCours }}</p><p class="kpi-label" style="color:rgba(255,255,255,0.7)">Projets actifs</p>
+    </div>
+    <div class="kpi-card"><p class="kpi-value">{{ tachesTerminees }}/{{ tachesTotal }}</p><p class="kpi-label">Completed tasks</p></div>
+    <div class="kpi-card">
+      <p class="kpi-value">{{ progression }}%</p><p class="kpi-label">Progression moyenne</p>
+      <div class="kpi-progress"><div class="kh-progress"><div class="kh-progress__fill" [style.width.%]="progression"></div></div></div>
+    </div>
+    <div class="kpi-card kpi-card--alert"><p class="kpi-value" style="color:var(--red)">2</p><p class="kpi-label">Alertes SLA</p></div>
+  </div>
+  <div class="bottom-grid animate-3">
+    <div class="kh-card panel">
+      <div class="panel-header"><span class="kh-section-title">My Projects</span><a routerLink="/entrepreneur/projets" class="kh-btn kh-btn--ghost kh-btn--sm">View all</a></div>
+      <div *ngFor="let p of projets.slice(0,3)" class="project-row">
+        <div class="project-row__info"><p style="font-size:13px;font-weight:600">{{ p.titre }}</p><span class="kh-badge" [class]="p.statut==='en_cours'?'kh-badge--teal':p.statut==='termine'?'kh-badge--green':'kh-badge--amber'">{{ p.statut }}</span></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px"><div class="kh-progress" style="flex:1"><div class="kh-progress__fill" [style.width.%]="p.progression"></div></div><strong style="font-size:12px">{{ p.progression }}%</strong></div>
+      </div>
+    </div>
+    <div class="kh-card panel">
+      <div class="panel-header"><span class="kh-section-title">Urgent tasks</span></div>
+      <div class="task-list">
+        <div class="task-item"><span class="kh-badge kh-badge--red">critical</span><p class="task-name">Prototype UI — E-Learning</p><p class="task-meta">Deadline: tomorrow · SLA exceeded</p></div>
+        <div class="task-item"><span class="kh-badge kh-badge--amber">haute</span><p class="task-name">Business Plan AgriSmart</p><p class="task-meta">Deadline: dans 3 jours</p></div>
+        <div class="task-item"><span class="kh-badge kh-badge--orange">normale</span><p class="task-name">Tests QA HealthMobile</p><p class="task-meta">En attente de validation coach</p></div>
+      </div>
+    </div>
+    <div class="kh-card panel">
+      <div class="panel-header"><span class="kh-section-title">Prochains RDV</span></div>
+      <div class="rdv-list">
+        <div class="rdv-item"><div class="rdv-date"><span class="rdv-day">15</span><span class="rdv-mo">Dec</span></div><div><p class="task-name">Coaching session — Ahmed</p><p class="task-meta">2:00 PM · Google Meet</p></div></div>
+        <div class="rdv-item"><div class="rdv-date"><span class="rdv-day">20</span><span class="rdv-mo">Dec</span></div><div><p class="task-name">Design Thinking Workshop</p><p class="task-meta">9:00 AM · In person</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>

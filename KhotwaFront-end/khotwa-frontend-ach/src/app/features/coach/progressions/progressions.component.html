@@ -1,0 +1,95 @@
+<div class="page animate-1">
+
+  <div class="page-header">
+    <div>
+      <h1 class="kh-page-title">My Progression</h1>
+      <p class="page-sub">{{ progressions.length }} resource(s) started</p>
+    </div>
+    <button class="kh-btn kh-btn--primary" (click)="openBibliotheque()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Go to Library
+    </button>
+  </div>
+
+  <!-- KPI -->
+  <div class="prog-kpis animate-2">
+    <div class="prog-kpi">
+      <span class="prog-kpi__val" style="color:var(--teal)">{{ enCours.length }}</span>
+      <span class="prog-kpi__label">In progress</span>
+    </div>
+    <div class="prog-kpi">
+      <span class="prog-kpi__val" style="color:var(--green)">{{ complets.length }}</span>
+      <span class="prog-kpi__label">Completed</span>
+    </div>
+    <div class="prog-kpi">
+      <span class="prog-kpi__val">{{ progressions.length }}</span>
+      <span class="prog-kpi__label">Total started</span>
+    </div>
+    <div class="prog-kpi" *ngIf="progressions.length > 0">
+      <span class="prog-kpi__val" style="color:var(--orange)">
+        {{ (complets.length / progressions.length * 100) | number:'1.0-0' }}%
+      </span>
+      <span class="prog-kpi__label">Completion rate</span>
+    </div>
+  </div>
+
+  <div *ngIf="loading" style="text-align:center;padding:40px;color:var(--text-muted)">Loading…</div>
+
+  <!-- En cours -->
+  <div *ngIf="enCours.length > 0" class="animate-3">
+    <h3 class="section-title">
+      <span class="section-dot" style="background:var(--teal)"></span>
+      In progress ({{ enCours.length }})
+    </h3>
+    <div class="prog-list">
+      <div *ngFor="let p of enCours" class="prog-card kh-card">
+        <div class="prog-card__left">
+          <span class="prog-card__icon">{{ typeIcons[p.ressource?.type] || '📚' || '📁' }}</span>
+          <div class="prog-card__info">
+            <p class="prog-card__titre">{{ p.ressource?.titre }}</p>
+            <p class="prog-card__meta">Last accessed: {{ p.dernierAcces | date:'d MMM y' }}</p>
+          </div>
+        </div>
+        <div class="prog-card__right">
+          <div class="prog-bar-wrap">
+            <div class="kh-progress" style="width:120px;height:8px">
+              <div class="kh-progress__fill" style="background:var(--teal)" [style.width.%]="p.pourcentage"></div>
+            </div>
+            <span class="prog-pct-label">{{ p.pourcentage }}%</span>
+          </div>
+          <button class="kh-btn kh-btn--ghost kh-btn--sm" (click)="marquerTermine(p)">Mark done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Complétés -->
+  <div *ngIf="complets.length > 0" class="animate-3" style="margin-top:24px">
+    <h3 class="section-title">
+      <span class="section-dot" style="background:var(--green)"></span>
+      Completed ({{ complets.length }})
+    </h3>
+    <div class="prog-list">
+      <div *ngFor="let p of complets" class="prog-card kh-card prog-card--done">
+        <div class="prog-card__left">
+          <span class="prog-card__icon">{{ typeIcons[p.ressource?.type] || '📚' || '📁' }}</span>
+          <div class="prog-card__info">
+            <p class="prog-card__titre">{{ p.ressource?.titre }}</p>
+            <p class="prog-card__meta">Completed: {{ p.dateCompletion | date:'d MMM y' }}</p>
+          </div>
+        </div>
+        <div class="prog-card__right">
+          <span class="done-badge">✓ Completed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vide -->
+  <div *ngIf="!loading && progressions.length === 0" class="empty-prog">
+    <p>📚</p>
+    <p>No resources started yet.</p>
+    <button class="kh-btn kh-btn--primary" (click)="openBibliotheque()">Browse the Library →</button>
+  </div>
+
+</div>

@@ -1,0 +1,47 @@
+<div class="page animate-1">
+  <div class="page-header">
+    <div><h1 class="kh-page-title">Talent Marketplace</h1><p class="page-sub">Connectez startups et talents</p></div>
+    <button class="kh-btn kh-btn--primary">+ Post listing</button>
+  </div>
+  <div class="tabs animate-2">
+    <button class="tab" [class.active]="view==='talents'" (click)="view='talents'">👤 Talents ({{ talents.length }})</button>
+    <button class="tab" [class.active]="view==='annonces'" (click)="view='annonces'">📋 Annonces ({{ annonces.length }})</button>
+  </div>
+  <div *ngIf="view==='talents'" class="grid animate-3">
+    <div *ngFor="let t of talents" class="card">
+      <div class="talent-header">
+        <div class="talent-avatar">{{ t.nom[0] }}</div>
+        <div>
+          <p class="card-name" style="font-size:14px">{{ t.nom }}</p>
+          <p class="card-meta">{{ t.poste }}</p>
+        </div>
+        <span class="kh-badge" [class]="t.disponible?'kh-badge--green':'kh-badge--gray'" style="margin-left:auto">{{ t.disponible ? 'Dispo' : 'Indispo' }}</span>
+      </div>
+      <div class="skills">
+        <span *ngFor="let c of t.competences" class="skill-tag">{{ c }}</span>
+      </div>
+      <div style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:11px;color:var(--text-muted)">Score global</span><strong style="font-size:12px;color:var(--orange)">{{ t.score }}%</strong></div>
+        <div class="kh-progress"><div class="kh-progress__fill" [style.width.%]="t.score"></div></div>
+      </div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:8px">
+        <button class="kh-btn kh-btn--primary kh-btn--sm">Contacter</button>
+        <button class="kh-btn kh-btn--ghost kh-btn--sm">Profil</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="view==='annonces'" class="grid animate-3">
+    <div *ngFor="let a of annonces" class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <span class="kh-badge" [class]="a.type==='cofondateur'?'kh-badge--orange':a.type==='stagiaire'?'kh-badge--teal':'kh-badge--green'">{{ a.type }}</span>
+        <span class="score-badge">{{ a.match }}% match</span>
+      </div>
+      <p class="card-name">{{ a.poste }}</p>
+      <p class="card-meta">{{ a.startup }}</p>
+      <div class="skills" style="margin-top:10px">
+        <span *ngFor="let c of a.competences" class="skill-tag">{{ c }}</span>
+      </div>
+      <button class="kh-btn kh-btn--primary kh-btn--sm" style="margin-top:14px;width:100%;justify-content:center">View applications</button>
+    </div>
+  </div>
+</div>
