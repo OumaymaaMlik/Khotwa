@@ -12,11 +12,11 @@ export class AuthService {
   currentUser: User | null = null;
 
   constructor() {
-    const saved = localStorage.getItem('currentUser');
+    const saved = sessionStorage.getItem('currentUser');
     if (saved) {
       this.currentUser = JSON.parse(saved);
     } else {
-      this.currentUser = MOCK_USERS[1]; 
+      this.currentUser = MOCK_USERS[1];
     }
   }
 
@@ -27,12 +27,12 @@ export class AuthService {
 
   login(role: UserRole): void {
     this.currentUser = MOCK_USERS.find(u => u.role === role) ?? null;
-    localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+    sessionStorage.setItem('currentUser', JSON.stringify(this.currentUser));
   }
 
   logout(): void {
     this.currentUser = null;
-    localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('currentUser');
   }
 
   getDefaultRoute(): string {

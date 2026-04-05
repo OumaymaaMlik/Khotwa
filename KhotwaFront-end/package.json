@@ -17,7 +17,9 @@
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
+    "@stomp/stompjs": "^7.3.0",
     "rxjs": "~7.8.0",
+    "sockjs-client": "^1.6.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.0"
   },
@@ -25,6 +27,7 @@
     "@angular-devkit/build-angular": "^17.0.0",
     "@angular/cli": "^17.0.0",
     "@angular/compiler-cli": "^17.0.0",
+    "@types/sockjs-client": "^1.5.4",
     "typescript": "~5.2.2"
   }
 }

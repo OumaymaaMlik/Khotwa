@@ -1,7 +1,7 @@
 package tn.esprit.khotwa.messaging.service;
 
-import tn.esprit.khotwa.messaging.dto.NotificationDTO;
 import tn.esprit.khotwa.messaging.dto.MessageMapper;
+import tn.esprit.khotwa.messaging.dto.NotificationDTO;
 import tn.esprit.khotwa.messaging.entity.Notification;
 import tn.esprit.khotwa.messaging.entity.NotificationType;
 import tn.esprit.khotwa.messaging.repository.NotificationRepository;
@@ -16,12 +16,12 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
 
-    public Notification createNotification(Long recipientId, String message, NotificationType type) {
+    public NotificationDTO createNotification(Long recipientId, String message, NotificationType type) {
         Notification notification = new Notification();
         notification.setRecipientId(recipientId);
         notification.setMessage(message);
         notification.setType(type);
-        return notificationRepository.save(notification);
+        return MessageMapper.toNotificationDTO(notificationRepository.save(notification));
     }
 
     public List<NotificationDTO> getNotifications(Long recipientId) {

@@ -81,4 +81,16 @@ export class MessageService {
   deleteMessageForMe(id: number, userId: number): Observable<Message> {
     return this.http.delete<Message>(`${this.apiUrl}/messages/${id}/delete-for-me`, { params: { userId } });
   }
+
+  announceOnline(userId: number): Observable<number[]> {
+    return this.http.post<number[]>(`${this.apiUrl}/messages/presence/${userId}/online`, null);
+  }
+
+  announceOffline(userId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/messages/presence/${userId}/offline`, null);
+  }
+
+  getOnlineUsers(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.apiUrl}/messages/presence/all-online`);
+  }
 }

@@ -1,5 +1,6 @@
 package tn.esprit.khotwa.messaging.controller;
 
+import tn.esprit.khotwa.messaging.config.OnlineUserStore;
 import tn.esprit.khotwa.messaging.dto.MessageDTO;
 import tn.esprit.khotwa.messaging.entity.Message;
 import tn.esprit.khotwa.messaging.entity.MessageStatus;
@@ -9,8 +10,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.data.domain.Page;
+import tn.esprit.khotwa.messaging.config.WebSocketEventPublisher;
+
 
 @RestController
 @RequestMapping("/api/messages")
@@ -18,6 +24,8 @@ import org.springframework.data.domain.Page;
 public class MessageController {
 
     private final MessageService messageService;
+    private final WebSocketEventPublisher eventPublisher;
+    private final OnlineUserStore onlineUserStore;
 
     @PostMapping
     public ResponseEntity<MessageDTO> sendMessage(@Valid @RequestBody Message message) {
@@ -82,4 +90,35 @@ public class MessageController {
             @RequestParam Long userId) {
         return ResponseEntity.ok(messageService.deleteForMe(id, userId));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<MessageDTO>> searchMessages(
+            @RequestParam Long userId,
+            @RequestParam String query) {
+        return ResponseEntity.ok(messageService.searchMessages(userId, query));
+    }
+
+
+    @PostMapping("/presence/{userId}/online")
+    public ResponseEntity<List<Long>> goOnline(@PathVariable Long userId) {
+        onlineUserStore.addUser(userId);
+        System.out.println("User " + userId + " is online. Broadcasting all online users: " + onlineUserStore.getOnlineUsers());
+        onlineUserStore.getOnlineUsers().forEach(onlineUserId ->
+                eventPublisher.publishOnlineStatus(onlineUserId, true)
+        );
+        return ResponseEntity.ok(new ArrayList<>(onlineUserStore.getOnlineUsers()));
+    }
+
+    @PostMapping("/presence/{userId}/offline")
+    public ResponseEntity<Void> goOffline(@PathVariable Long userId) {
+        onlineUserStore.removeUser(userId);
+        eventPublisher.publishOnlineStatus(userId, false);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/presence/all-online")
+    public ResponseEntity<List<Long>> getOnlineUsers() {
+        return ResponseEntity.ok(new ArrayList<>(onlineUserStore.getOnlineUsers()));
+    }
+
 }
